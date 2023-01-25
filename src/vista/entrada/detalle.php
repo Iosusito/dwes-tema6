@@ -1,0 +1,1 @@
+<p>Detalle de una entrada</p>
