@@ -72,13 +72,14 @@ class EntradaBD
             $conexion = BaseDatos::getConexion();
 
             $sentencia = $conexion->prepare(
-                "select * from entrada whrere id=?"
+                "select * from entrada where id=?"
             );
+
             $sentencia->bind_param("i", $id);
             $sentencia->execute();
             $resultado = $sentencia->get_result();
             $fila = $resultado->fetch_assoc();
-            
+
             return $fila != null;
         } catch (\Exception $e) {
             return null;
@@ -94,7 +95,7 @@ class EntradaBD
                 "insert into entrada (texto, imagen, autor) values (?, ?, ?)"
             );
             $texto = $entrada->getTexto();
-            $imagen = $entrada->getImagen() == null ? "" : $entrada->getImagen();
+            $imagen = $entrada->getImagen();
             $autor = $entrada->getAutor();
             $sentencia->bind_param(
                 "ssi",
@@ -108,6 +109,15 @@ class EntradaBD
         } catch (\Exception $e) {
             return null;
         }
+    }
+
+    public static function moverImagenEntrada(string $ruta) : bool
+    {
+        $fichero = $_FILES['imagen']['tmp_name'];
+
+        $movido = move_uploaded_file($fichero, $ruta);
+
+        return $movido;
     }
 
     public static function eliminar(int $id): bool|null

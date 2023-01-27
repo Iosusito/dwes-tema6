@@ -16,6 +16,7 @@ class EntradaControlador extends Controlador
 
     public function detalle(): Entrada|null
     {
+        $this->vista = "entrada/detalle";
         return null;
     }
 
@@ -27,7 +28,7 @@ class EntradaControlador extends Controlador
         }
 
         $entrada = Entrada::CrearEntradaDesdePost($_POST);
-        if (!$entrada->esValida()) {
+        if ($entrada === null || !$entrada->esValida()) {
             $this->vista = "entrada/nuevo";
             return $entrada;
         }
@@ -36,10 +37,10 @@ class EntradaControlador extends Controlador
         if ($id !== null) {
             $this->vista = "entrada/detalle";
             return EntradaBD::getEntrada($id);
-        } else {
-            $this->vista = "entrada/nuevo";
-            return $entrada;
         }
+
+        $this->vista = "entrada/nuevo";
+        return $entrada;
     }
 
     public function eliminar(): bool|null

@@ -1,4 +1,5 @@
 <?php
+
 namespace dwesgram\modelo;
 
 use dwesgram\modelo\Modelo;
@@ -23,13 +24,36 @@ class Entrada extends Modelo
 
     public static function CrearEntradaDesdePost(array $post): Entrada|null
     {
-        $texto = htmlspecialchars(trim($post['texto']));
-        // $imagen = $_FILES && isset($_FILES['imagen']) &&
-        // $_FILES['imagen']['error'] === UPLOAD_ERR_OK &&
-        // $_FILES['imagen']['size'] > 0 ? $_FILES['imagen']['tmp_name'] : null;
+        if (!isset($post['texto'])) {
+            return null;
+        }
+        
+        $texto = mb_substr(htmlspecialchars(trim($post['texto'])), 0, 128);
+
+        if (
+            $_FILES && isset($_FILES['imagen']) &&
+            $_FILES['imagen']['error'] === UPLOAD_ERR_OK &&
+            $_FILES['imagen']['size'] > 0
+        ) {
+            $fichero = $_FILES['imagen']['tmp_name'];
+
+            $permitido = array('image/png', 'image/jpeg');
+
+            $finfo = finfo_open(FILEINFO_MIME_TYPE);
+            $mime = finfo_file($finfo, $fichero);
+
+            if (!in_array($mime, $permitido)) {
+                return null;
+            }
+
+            $imagen = "assets/img/" . 
+            time() .
+            basename($_FILES['imagen']['name']);
+        }
+
         $entrada = new Entrada(
-            texto: $texto
-            //imagen: "assets/img" . $imagen
+            texto: $texto,
+            imagen: isset($imagen) ? $imagen : null
         );
         return $entrada;
     }
@@ -66,7 +90,7 @@ class Entrada extends Modelo
 
     public function esValida(): bool
     {
-        return count(array_filter($this->errores, fn($err) => $err != null)) == 0;
+        return count(array_filter($this->errores, fn ($err) => $err != null)) == 0;
     }
 
     public function getErrores(): array
