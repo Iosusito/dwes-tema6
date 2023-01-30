@@ -136,4 +136,9 @@ class EntradaBD
             return null;
         }
     }
+
+    public static function eliminarImagenEntrada(string $ruta) : bool
+    {
+        return unlink($ruta);
+    }
 }

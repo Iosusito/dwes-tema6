@@ -29,6 +29,10 @@ class Entrada extends Modelo
         }
         
         $texto = mb_substr(htmlspecialchars(trim($post['texto'])), 0, 128);
+        
+        $entrada = new Entrada(
+            texto: $texto
+        );
 
         if (
             $_FILES && isset($_FILES['imagen']) &&
@@ -43,18 +47,16 @@ class Entrada extends Modelo
             $mime = finfo_file($finfo, $fichero);
 
             if (!in_array($mime, $permitido)) {
-                return null;
+                $entrada->errores['imagen'] = "extension no soportada";
+                return $entrada;
             }
 
             $imagen = "assets/img/" . 
             time() .
             basename($_FILES['imagen']['name']);
+            $entrada->imagen = $imagen;
         }
 
-        $entrada = new Entrada(
-            texto: $texto,
-            imagen: isset($imagen) ? $imagen : null
-        );
         return $entrada;
     }
 
