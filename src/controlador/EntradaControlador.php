@@ -22,7 +22,7 @@ class EntradaControlador extends Controlador
         }
 
         $id = htmlspecialchars(trim($_GET['id']));
-        if (EntradaBD::existeEntrada($id) == null) {
+        if (!is_numeric($id) || EntradaBD::existeEntrada($id) == null) {
             $this->vista = "entrada/lista";
             return EntradaBD::getAllEntradas();
         }
@@ -70,7 +70,7 @@ class EntradaControlador extends Controlador
         return $entrada;
     }
 
-    public function eliminar(): bool|null
+    public function eliminar(): bool|array|null
     {
         if (!$_GET || !isset($_GET['id'])) {
             $this->vista = "entrada/lista";
@@ -78,14 +78,9 @@ class EntradaControlador extends Controlador
         }
 
         $id = htmlspecialchars(trim($_GET['id']));
-        if (!is_numeric($id)) {
+        if (!is_numeric($id) || EntradaBD::existeEntrada($id) == null) {
             $this->vista = "entrada/lista";
-            return null;
-        }
-
-        if (EntradaBD::existeEntrada($id) === null) {
-            $this->vista = "entrada/lista";
-            return null;
+            return EntradaBD::getAllEntradas();
         }
 
         $entrada = EntradaBD::getEntrada($id);

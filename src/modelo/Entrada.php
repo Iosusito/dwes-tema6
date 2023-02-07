@@ -28,7 +28,7 @@ class Entrada extends Modelo
             return null;
         }
         
-        $texto = mb_substr(htmlspecialchars(trim($post['texto'])), 0, 128);
+        $texto = mb_substr(htmlspecialchars(trim($post['texto'])), 0, 128);//128 caracteres max
         
         $entrada = new Entrada(
             texto: $texto
@@ -54,6 +54,7 @@ class Entrada extends Modelo
             $imagen = "assets/img/" . 
             time() .
             basename($_FILES['imagen']['name']);
+            
             $entrada->imagen = $imagen;
         }
 

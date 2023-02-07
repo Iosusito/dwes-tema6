@@ -1,12 +1,25 @@
-<p>Detalle de una entrada</p>
-
 <?php
+use dwesgram\modelo\UsuarioBD;
+
 $entrada = $datosParaVista['datos'];
-//var_dump($entrada);
+
+$id = $entrada->getId();
+$texto = $entrada->getTexto();
+$imagenRuta = $entrada->getImagen();
+$autor = UsuarioBD::getNombreUsuario($entrada->getAutor());
+$creado = date('d/m/Y', $entrada->getCreado());
 ?>
 
-<p><?= $entrada->getId() ?></p>
-<p><?= $entrada->getTexto() ?></p>
-<p><?= $entrada->getImagen() ?></p>
-<p><?= $entrada->getAutor() ?></p>
-<p><?= $entrada->getCreado() ?></p>
+<h2><?= $autor ?> escribió</h2>
+
+<p><?= $texto ?></p>
+
+<?php
+if ($imagenRuta !== null) {
+    echo "<img src=\"$imagenRuta\" alt=\"Imagen\">";
+}
+?>
+
+<p>Publicado: <?= $creado ?></p>
+
+<a href="index.php?controlador=entrada&accion=eliminar&id=<?= $id ?>">Eliminar</a>
