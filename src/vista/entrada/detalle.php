@@ -22,4 +22,8 @@ if ($imagenRuta !== null) {
 
 <p>Publicado: <?= $creado ?></p>
 
-<a href="index.php?controlador=entrada&accion=eliminar&id=<?= $id ?>">Eliminar</a>
+<?php
+if ($sesion->usuarioAutenticado($id)) {
+    echo "<a href=\"index.php?controlador=entrada&accion=eliminar&id=<?= $id ?\">>Eliminar</a>";
+}
+?>

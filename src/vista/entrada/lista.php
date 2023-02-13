@@ -1,6 +1,6 @@
 <?php
 
-use dwesgram\modelo\Entrada;
+use dwesgram\modelo\UsuarioBD;
 
 if ($datosParaVista['datos'] === null || !$datosParaVista['datos']) {
     echo "<p>No hay entradas publicadas<p>";
@@ -8,26 +8,24 @@ if ($datosParaVista['datos'] === null || !$datosParaVista['datos']) {
     echo "<div>";
     echo "<hr>";
     foreach ($datosParaVista['datos'] as $entrada) {
-        if ($entrada instanceof Entrada) {
-            $id = $entrada->getId();
-            $texto = $entrada->getTexto();
-            $imagen = $entrada->getImagen();
+        $id = $entrada->getId();
+        $texto = $entrada->getTexto();
+        $imagen = $entrada->getImagen();
+        $autor = UsuarioBD::getNombreUsuario($entrada->getAutor());
 
-            echo "<div>";
-            echo "<p>$texto</p>";
-            if ($imagen !== null) {
-                echo "<img src=\"$imagen\"></img>";
-            }
-            echo <<<END
-                <p>
-                    <a href=\"index.php?controlador=entrada&accion=detalle&id=$id\">Detalles</a>
-                    |
-                    <a href=\"index.php?controlador=entrada&accion=eliminar&id=$id\">Eliminar</a>
-                </p>
-            END;
-            echo "</div>";
-            echo "<hr>";
+        echo "<div>";
+        echo "<p>$autor escribió:</p>";
+        echo "<p>$texto</p>";
+        if ($imagen !== null) {
+            echo "<img src=\"$imagen\"></img>";
         }
+        echo "<p><a href=\"index.php?controlador=entrada&accion=detalle&id=$id\">Detalles</a>";
+        if ($sesion->usuarioAutenticado($id)) {
+            echo "| <a href=\"index.php?controlador=entrada&accion=eliminar&id=$id\">Eliminar</a>";
+        }
+        echo "</p>";
+        echo "</div>";
+        echo "<hr>";
     }
     echo "</div>";
 }

@@ -1,4 +1,6 @@
 <?php
+session_start();
+
 require_once('vendor/autoload.php');
 require_once('config/config.php');
 
@@ -56,6 +58,8 @@ if (!method_exists($controladorObjeto, $accion)) {
 }
 
 $datosParaVista['datos'] = $controladorObjeto->$accion();
+
+$sesion = new \dwesgram\modelo\Sesion();
 
 $vista = "vista/" . $controladorObjeto->getVista() . ".php";
 

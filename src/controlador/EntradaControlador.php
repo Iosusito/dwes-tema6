@@ -8,7 +8,7 @@ use dwesgram\modelo\EntradaBD;
 
 class EntradaControlador extends Controlador
 {
-    public function lista(): array
+    public function lista(): array|null
     {
         $this->vista = "entrada/lista";
         return EntradaBD::getAllEntradas();
@@ -39,14 +39,18 @@ class EntradaControlador extends Controlador
 
     public function nuevo(): Entrada|null
     {
+        if (!$this->sesionIniciada()) {
+            $this->vista = "errores/403";
+            return null;
+        }
+
         if (!$_POST) {
             $this->vista = "entrada/nuevo";
             return null;
         }
 
         $entrada = Entrada::CrearEntradaDesdePost($_POST);
-
-        if ($entrada === null || !$entrada->esValida()) {
+        if ($entrada === null || !$entrada->esValido()) {
             $this->vista = "entrada/nuevo";
             return $entrada;
         }
@@ -72,9 +76,14 @@ class EntradaControlador extends Controlador
 
     public function eliminar(): bool|array|null
     {
+        if (!$this->sesionIniciada()) {
+            $this->vista = "errores/403";
+            return null;
+        }
+
         if (!$_GET || !isset($_GET['id'])) {
             $this->vista = "entrada/lista";
-            return null;
+            return EntradaBD::getAllEntradas();
         }
 
         $id = htmlspecialchars(trim($_GET['id']));
@@ -86,6 +95,11 @@ class EntradaControlador extends Controlador
         $entrada = EntradaBD::getEntrada($id);
         if ($entrada === null) {
             $this->vista = "errores/500";
+            return null;
+        }
+
+        if (!$this->usuarioAutenticado($entrada->getAutor())) {
+            $this->vista = "errores/403";
             return null;
         }
 

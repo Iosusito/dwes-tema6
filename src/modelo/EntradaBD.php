@@ -45,7 +45,7 @@ class EntradaBD
         try {
             $conexion = BaseDatos::getConexion();
 
-            $resultado = $conexion->query("select * from entrada");
+            $resultado = $conexion->query("select * from entrada order by creado");
             $listaEntradas = [];
             if ($resultado !== false) {
                 while (($fila = $resultado->fetch_assoc()) != null) {

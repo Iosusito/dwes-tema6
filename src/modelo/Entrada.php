@@ -3,11 +3,10 @@
 namespace dwesgram\modelo;
 
 use dwesgram\modelo\Modelo;
+use dwesgram\modelo\Sesion;
 
 class Entrada extends Modelo
 {
-    private array $errores = [];
-
     public function __construct(
         private string|null $texto,
         private int|null $id = null,
@@ -15,7 +14,6 @@ class Entrada extends Modelo
         private int|null $autor = null,
         private int|null $creado = null
     ) {
-        $this->autor = 1;
         $this->errores = [
             'texto' => $texto === null || empty($texto) ? 'El texto no puede estar vacío' : null,
             'imagen' => null
@@ -27,11 +25,12 @@ class Entrada extends Modelo
         if (!isset($post['texto'])) {
             return null;
         }
-        
-        $texto = mb_substr(htmlspecialchars(trim($post['texto'])), 0, 128);//128 caracteres max
-        
+
+        $texto = mb_substr(htmlspecialchars(trim($post['texto'])), 0, 128); //128 caracteres max
+
         $entrada = new Entrada(
-            texto: $texto
+            texto: $texto,
+            autor: (new Sesion())->getId()
         );
 
         if (
@@ -51,11 +50,9 @@ class Entrada extends Modelo
                 return $entrada;
             }
 
-            $imagen = "assets/img/" . 
-            time() .
-            basename($_FILES['imagen']['name']);
-            
-            $entrada->imagen = $imagen;
+            $entrada->imagen = "assets/img/" .
+                time() .
+                basename($_FILES['imagen']['name']);
         }
 
         return $entrada;
@@ -64,11 +61,6 @@ class Entrada extends Modelo
     public function getId(): int|null
     {
         return $this->id;
-    }
-
-    public function setId(int $id): void
-    {
-        $this->id = $id;
     }
 
     public function getTexto(): string
@@ -89,15 +81,5 @@ class Entrada extends Modelo
     public function getCreado(): int|null
     {
         return $this->creado;
-    }
-
-    public function esValida(): bool
-    {
-        return count(array_filter($this->errores, fn ($err) => $err != null)) == 0;
-    }
-
-    public function getErrores(): array
-    {
-        return $this->errores;
     }
 }
