@@ -22,11 +22,7 @@ class Entrada extends Modelo
 
     public static function CrearEntradaDesdePost(array $post): Entrada|null
     {
-        if (!isset($post['texto'])) {
-            return null;
-        }
-
-        $texto = mb_substr(htmlspecialchars(trim($post['texto'])), 0, 128); //128 caracteres max
+        $texto = isset($post['texto']) ? mb_substr(htmlspecialchars(trim($post['texto'])), 0, 128): null; //128 caracteres max
 
         $entrada = new Entrada(
             texto: $texto,

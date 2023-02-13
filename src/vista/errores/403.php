@@ -3,4 +3,5 @@
     <p>
         No puedes realizar la acción
     </p>
+    <a href="index.php?controlador=entrada&accion=lista">Ir al inicio</a>
 </div>

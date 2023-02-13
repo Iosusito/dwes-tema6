@@ -20,8 +20,8 @@ if ($datosParaVista['datos'] === null || !$datosParaVista['datos']) {
             echo "<img src=\"$imagen\"></img>";
         }
         echo "<p><a href=\"index.php?controlador=entrada&accion=detalle&id=$id\">Detalles</a>";
-        if ($sesion->usuarioAutenticado($id)) {
-            echo "| <a href=\"index.php?controlador=entrada&accion=eliminar&id=$id\">Eliminar</a>";
+        if ($sesion->usuarioAutenticado($entrada->getAutor())) {
+            echo " | <a href=\"index.php?controlador=entrada&accion=eliminar&id=$id\">Eliminar</a>";
         }
         echo "</p>";
         echo "</div>";

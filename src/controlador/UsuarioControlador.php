@@ -91,7 +91,7 @@ class UsuarioControlador extends Controlador
             return $usuario;
         }
 
-        if ($usuario->getAvatar() != "assests/img/avatar_predefinido.jpg") {
+        if ($usuario->getAvatar() != "assets/img/avatar_predefinido.jpg") {
             $ok = UsuarioBD::moverImagenAvatar($usuario->getAvatar());
             if (!$ok) {
                 $this->vista = "errores/500";

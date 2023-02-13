@@ -10,3 +10,5 @@ switch ($id) {
         echo "<p>Error interno desconocido.</p>";
         break;
 }
+?>
+<a href="index.php?controlador=entrada&accion=lista">Ir al inicio</a>

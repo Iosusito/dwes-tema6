@@ -9,7 +9,7 @@ class Usuario extends Modelo
         private string|null $email,
         private string|null $clave,
         private int|null $id = null,
-        private string|null $avatar = "assests/img/avatar_predefinido.jpg",
+        private string|null $avatar = "assets/img/avatar_predefinido.jpg",
         private int|null $registrado = null
     ) {
         $this->errores = [
@@ -23,27 +23,24 @@ class Usuario extends Modelo
 
     public static function crearUsuarioDesdePost(array $post): Usuario|null
     {
-        if (!isset($post['nombre']) || !isset($post['clave']) || !isset($post['repiteClave']) || !isset($post['email'])) {
-            return null;
-        }
+        $nombre = isset($post['nombre']) ? htmlspecialchars(trim($post['nombre'])) : null;
+        $clave = isset($post['clave']) ? htmlspecialchars(trim($post['clave'])) : null;
+        $email = isset($post['email']) ? htmlspecialchars(trim($post['email'])) : null;
 
-        // isset($post['nombre']) ? htmlspecialchars(trim($post['nombre'])) : null
         $usuario = new Usuario(
-            nombre: htmlspecialchars(trim($post['nombre'])),
-            clave: htmlspecialchars(trim($post['clave'])),
-            email: htmlspecialchars(trim($post['email']))
+            nombre: $nombre,
+            clave: $clave,
+            email: $email
         );
 
         if (mb_strlen($usuario->getNombre()) > 10) {
             $usuario->errores['nombre'] = "Longitud máxima de 10 carácteres";
         }
 
-        if (empty($post['repiteClave'])) {
+        if (!isset($post['repiteClave']) || empty($post['repiteClave'])) {
             $usuario->errores['repiteClave'] = "La repetición de clave no puede estar vacía";
-        } else {
-            if ($post['clave'] !== $post['repiteClave']) {
-                $usuario->errores['clave'] = "Las claves no coindiden";
-            }
+        } elseif ($post['clave'] !== $post['repiteClave']) {
+            $usuario->errores['clave'] = "Las claves no coindiden";
         }
 
         if (
