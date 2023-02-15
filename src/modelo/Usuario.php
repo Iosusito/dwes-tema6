@@ -37,6 +37,10 @@ class Usuario extends Modelo
             $usuario->errores['nombre'] = "Longitud máxima de 10 carácteres";
         }
 
+        if (UsuarioBD::existeUsuario($nombre) === true) {
+            $usuario->errores['nombre'] = "Ya existe un usuario con este nombre";
+        }
+
         if (!isset($post['repiteClave']) || empty($post['repiteClave'])) {
             $usuario->errores['repiteClave'] = "La repetición de clave no puede estar vacía";
         } elseif ($post['clave'] !== $post['repiteClave']) {
